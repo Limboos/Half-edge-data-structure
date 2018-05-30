@@ -2,10 +2,10 @@ import turtle
 import math
 
 #TODO
-#DUŻO
-#djikstra
-#dodac wagi
-class Vertex(object):                           #klasa tworzaca wierzcholki
+#djikstra algorithm
+#add weight to HalEdge Class
+class Vertex(object):
+    #this class create Vertex
     count=1
     def __init__(self,x,y):
         self.Vertex_id=Vertex.count
@@ -20,7 +20,11 @@ class Vertex(object):                           #klasa tworzaca wierzcholki
     def getxy(self):
         return self.__x,self.__y
 
-class HalfEdge(object):                         #klasa tworzaca krawedzie
+class HalfEdge(object):
+    #this class i use in my data structure
+    #S- represent the other side of edge
+    #V - represent the Vertex
+    #N- represent the edge
     count=1
     def __init__(self):
         self.id=HalfEdge.count
@@ -40,7 +44,9 @@ class HalfEdge(object):                         #klasa tworzaca krawedzie
     def set_not_taken(self):
         self.taken_edge=False
 
-def MakeEdge(V1,V2):                        #funkcja tworzaca krawedzie
+def MakeEdge(V1,V2):
+    #with this function i can create a edge
+    #one edge have two half-edges(it's a object class HalfEdge)
     he1=HalfEdge()
     he2=HalfEdge()
     he1.V=V1
@@ -51,16 +57,20 @@ def MakeEdge(V1,V2):                        #funkcja tworzaca krawedzie
     he2.N=he2
     return he1
 
-def Splice( e1,e2):                         #funkcja ktora laczy krawedzie
+def Splice( e1,e2):
+    #this function connect to the edges
+    #allow me to navigate in the structure
     temp= e1.N
     e1.N=e2.N
     e2.N=temp
 
 def Fast_splice(edges):
+    #this function connect all edges that should be connect
+    #i use a dictionary to create a 'neighborhood matrix'
     V_id={}
     for i in edges:
-        V_id.update({i.V.Vertex_id:None})               #tworze slownik, poniewaz bez tego wywala blad zwiazany z
-        V_id.update({i.Sym().V.Vertex_id:None })        # brakiem danej warotsci podczas sprawdzania w nastepnej petli
+        V_id.update({i.V.Vertex_id:None})
+        V_id.update({i.Sym().V.Vertex_id:None })
 
     for e in edges:
         if V_id[e.V.Vertex_id]==None:
@@ -68,30 +78,30 @@ def Fast_splice(edges):
         V_id[e.V.Vertex_id].append(e)
         if V_id[e.Sym().V.Vertex_id]==None:
             V_id[e.Sym().V.Vertex_id]=[]
-        V_id[e.Sym().V.Vertex_id].append(e.Sym())       #tworzenie slwonika z odpowiadajacymi krawedzami
-                                                        # dla danego wierzcholka
+        V_id[e.Sym().V.Vertex_id].append(e.Sym())
 
     A=[]
     for az in V_id.values():
         for i in az:
-            A.append([Azymut(i),i])                 #licze azymuty i dodaje do tablicy wraz z krawedzia
-        A.sort()                                    #sortuje po azzymutach
-        
+            A.append([Azymut(i),i])
+        A.sort()
         if len(A)==2:
             Splice(A[1][1],A[0][1])
         else:
-            #for i in range(len(A)):               #przechodze petla po liscie z azymutami
+            #for i in range(len(A)):
                 #print(A[i][1].V.Vertex_id,A[i][1].Sym().V.Vertex_id)
                 #print(A[i][0])
 
-            for i in range(len(A)-1):               #przechodze petla po liscie z azymutami
+            for i in range(len(A)-1):
                 Splice(A[0][1], A[i+1][1])
 
-        A=[]                                        #kasuje zawartosc tablicy aby petla moga od nowa ja zapelnic
+        A=[]
     return V_id
 
 def Azymut(e):
-    # zerwoy element to elemnet przy przy wierzchołku
+    # funciton to count angle betwen two vertex
+    #this function return an Angle
+    # i am useing a Geodesy theory for angel
     x=e.Sym().V.getxy()[0]-e.V.getxy()[0]
     y=e.Sym().V.getxy()[1] - e.V.getxy()[1]
     
@@ -113,19 +123,21 @@ def Azymut(e):
             pi=180+pi
         elif x>0 and y<0:
             pi=180-pi
-    return pi                   #licze azymut, sprawdzaja wszystkie warunki zawarte w definicji azzymutu
+    return pi
 
 def remove_visited(vertex):
-    #ustawia wierzcholki jako nieodwiedzone
+    #this function set vertex to not visited
     for i in vertex:
         i.set_not_visited()
 
 def remove_teken(e):
+    #this function set all edges to not taken
     for i in e:
         i.set_not_taken()
         i.Sym().set_not_taken()
 
 def neighbours(edges):
+    # this function return all neighbours of a Vertex
     l=[]
     eTemp=edges
     while True:
@@ -136,32 +148,36 @@ def neighbours(edges):
     return l
 
 def bfs(start):
+    #this i a breadth-first search function
+    #i use this to travel in graph and return all Vertex
     explored = []
     queue = [start]
 
-    levels = {}                                 #dodaje poziomy oddalenia od wierzcholka
+    levels = {}
     levels[start]= 0
 
-    explored.append(start)                      #dodaje od odwiedzonych aby na koniec zwrócic liste wszystkich wierzcholkow
-    while queue:                                #nie wiem czy stosować kolejke czy bazowac na tylko strukturze
-        node = queue.pop(0)                     #tworze zmienna z aktualna pozycja
-        node.V.set_visited()                    #ustawiam jako odwiedzonego za pomoca zmiennej w klasie wierzcholek
-        nb = neighbours(node)                   #sprawdzam sasiadow za pomoca funkcji ktora jest wyzej
+    explored.append(start)
+    while queue:
+        node = queue.pop(0)
+        node.V.set_visited()
+        nb = neighbours(node)
 
-        for neighbour in nb:                            #przechodze po liscie sasiadow
-            if neighbour.V.visited==False:                  #jezeli nie odwiedzony to dodaje go do kolejki i ustawiam jako odwiedzony
+        for neighbour in nb:
+            if neighbour.V.visited==False:
                 queue.append(neighbour)
                 explored.append(neighbour)
 
                 neighbour.V.set_visited()
 
-                #levels[neighbour]= levels[node]+1       #zwiekszam poziom  czyli odleglosc od wierzcholka glownego
+                #levels[neighbour]= levels[node]+1
 
 
     #print(levels)
     return explored
 
 def bfs_edges(start):
+    #return 'main' edges in faces in the graph
+    #i use the BFS algorithm in this
     face = []
     queue = [start]
     while queue:
@@ -186,23 +202,25 @@ def bfs_edges(start):
 
     return face
 
-def bfs_paths(start, goal):                      #funkcja sprawdzajaca drogi
+def bfs_paths(start, goal):
+    #return a path betwen two vertex
 
-    queue = [[start]]                         #kolejka ktora zaczyna od punktu startowego
+    queue = [[start]]
     while queue:
         path = queue.pop(0)
         node=path[-1]
-        if node.V.visited==False:                       #jezeli nieodwiedozny
-            for ng in neighbours(node):                 #petla po sasiadach
-                new_path=list(path)                         #tworze liste z droga
-                new_path.append(ng)                         #dodaje sasiada do tej listy
-                queue.append(new_path)                      #powiekszam kolejke o liste new_path
-                if ng.V.Vertex_id==goal.V.Vertex_id:            #sprawdzam czy osiagnalem cel
+        if node.V.visited==False:
+            for ng in neighbours(node):
+                new_path=list(path)
+                new_path.append(ng)
+                queue.append(new_path)
+                if ng.V.Vertex_id==goal.V.Vertex_id:
                     return new_path
-            node.V.set_visited()                            #ustawiam wierzcholek na odwiedzony
+            node.V.set_visited()
     return "nie ma drogi"
 
 def creatign_faces(faces):
+    #this function take the main edges in faces and return entire face
     f = []
     all = []
     for i in faces:
@@ -212,12 +230,12 @@ def creatign_faces(faces):
             eTemp = eTemp.Sym().NextV()
             if eTemp == i:
                 break
-
         all.append(f)
         f = []
     return all
 
 def saving_file(v,f):
+    #just a basic function to saving in a .obj file
     l=[]
     with open("graph2.obj","w") as file:
         for i in v:
@@ -241,6 +259,8 @@ def saving_file(v,f):
     file.close()
 
 def reading_file():
+    #this function is not optimized
+    #this function read a file and return all vertex and faces from file
     v_from_file = []
     faces = []
 
@@ -258,6 +278,8 @@ def reading_file():
     return v_from_file,faces
 
 def creating_graph(faces):
+    #this function create a edges from the data form the file
+    #i need to optimize this crap
     edges=[]
     l=[]
     for pol in faces:
@@ -280,6 +302,7 @@ def creating_graph(faces):
     del l
     return edges
 def manual():
+    #this is my first graph that i created
     V = []
     edges = []
     V.append(Vertex(1, 55))
@@ -310,6 +333,7 @@ def manual():
 
     return V,edges
 def drawing(V):
+    #just a simple drawing function
     turtle.tracer(0)
     for i in V:
         turtle.penup()
@@ -322,7 +346,7 @@ if __name__ == '__main__':
 
 
 
-    V,faces=reading_file()
+    #V,faces=reading_file()
     edges=creating_graph(faces)
     #V,edges=manual()
 

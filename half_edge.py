@@ -1,8 +1,12 @@
 import turtle
 import math
+import random
+from collections import defaultdict
+from heapq import *
+import heapq
 
 #TODO
-#djikstra algorithm
+#improve djikstra algorithm
 #add weight to HalEdge Class
 class Vertex(object):
     #this class create Vertex
@@ -13,12 +17,18 @@ class Vertex(object):
         self.__x=x
         self.__y=y
         self.visited=False
+        self.parent = None
+
     def set_visited(self):
         self.visited=True
     def set_not_visited(self):
         self.visited=False
     def getxy(self):
         return self.__x,self.__y
+    def set_distance(self,dis):
+        self.distance=dis
+    def set_previous(self,cr):
+        self.parent=cr
 
 class HalfEdge(object):
     #this class i use in my data structure
@@ -33,6 +43,8 @@ class HalfEdge(object):
         self.S=None
         self.N=None
         self.taken_edge=False
+        self.weight=random.randint(1,10)
+
     def Sym(self):
         return self.S
     def NextV(self):
@@ -43,6 +55,10 @@ class HalfEdge(object):
         self.taken_edge=True
     def set_not_taken(self):
         self.taken_edge=False
+    def get_weight(self):
+        return self.weight
+
+
 
 def MakeEdge(V1,V2):
     #with this function i can create a edge
@@ -218,6 +234,46 @@ def bfs_paths(start, goal):
                     return new_path
             node.V.set_visited()
     return "nie ma drogi"
+def minimum(q):
+    min=9999999999999
+    for j,i in q.items():
+         if i<min :
+            min=i
+            temp=j
+    return temp
+def dijkstra(start,goal):
+    dis={}
+    prev={}
+    q=[]
+    for ver in bfs(start):
+        dis.update({ver:999999999})
+        prev.update({ver:999999999})
+        q.append(ver)
+    dis[start]=0
+    while q:
+        temp=q.pop(q.index(minimum(dis)))
+        if temp.V==goal.V:
+            return dis,prev
+        for nei in neighbours(temp):
+            new_dis=dis[temp]+nei.get_weight()
+            try:
+                if new_dis<dis[nei]:
+                    dis[nei]=new_dis
+                    prev[nei.V]=temp
+            except KeyError:
+                pass
+        dis.pop(temp)
+    return dis,prev
+def shortestPath(start,goal):
+    D,P = dijkstra(start,goal)
+    Path = []
+    while 1:
+        Path.append(goal)
+        if goal == start:
+            break
+        goal = P[goal.V]
+    Path.reverse()
+    return Path
 
 def creatign_faces(faces):
     #this function take the main edges in faces and return entire face
@@ -346,7 +402,7 @@ if __name__ == '__main__':
 
 
 
-    #V,faces=reading_file()
+    V,faces=reading_file()
     edges=creating_graph(faces)
     #V,edges=manual()
 
@@ -359,7 +415,14 @@ if __name__ == '__main__':
     remove_teken(edges)
     creatign_faces(root_faces)
     #saving_file(x,root_faces)
-    turtle.speed(1)
+    #path=shortestPath(edges[0].Sym(),edges[12].Sym())
+    #print(edges[0].Sym().V.Vertex_id,edges[12].Sym().V.Vertex_id)
+    #for i in path:
+      #  print(i.V.Vertex_id)
+
+
+
+    turtle.speed(3)
     for i in edges:
         turtle.penup()
         turtle.goto(i.V.getxy())
@@ -368,5 +431,4 @@ if __name__ == '__main__':
 
     #checking(edges)
     drawing(V)
-
     turtle.done()

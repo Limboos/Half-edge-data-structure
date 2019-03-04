@@ -1,5 +1,5 @@
-
 import sqlite3
+
 class Data_base(object):
     # utworzenie połączenia z bazą przechowywaną na dysku
     def __init__(self):
@@ -29,9 +29,7 @@ class Data_base(object):
         self.cur.execute('INSERT INTO VERTEX VALUES(NULL, ?, ?);', (x,y))
         self.con.commit()
 
-        # wykonujemy zapytanie SQL, które pobierze id klasy "1A" z tabeli "klasa".
-        #cur.execute('SELECT id FROM ID WHERE nazwa = ?', ('1',))
-        #klasa_id = cur.fetchone()[0]
+        # wykonuje zapytanie SQL, które pobierze id klasy "1A" z tabeli "klasa".
 
     def adding_edge(self,V1,V2):
         # wstawiam wiele rekordów

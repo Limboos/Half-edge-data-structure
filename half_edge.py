@@ -74,8 +74,6 @@ def remove_teken(e):
         i.set_not_taken()
         i.Sym().set_not_taken()
 
-    return l
-
 def bfs(start):
     # this i a breadth-first search function
     # i use this to travel in graph and return all Vertex

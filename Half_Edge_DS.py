@@ -15,7 +15,7 @@ class Vertex(object):
         self.__x = x
         self.__y = y
         self.visited = False
-        self.distance=None
+        self.distance = None
 
     def set_visited(self):
         self.visited = True
@@ -28,6 +28,12 @@ class Vertex(object):
 
     def set_distance(self, dis):
         self.distance = dis
+
+    def __iter__(self):
+        return [self.__x, self.__y].__iter__()
+
+    def __del__(self):
+        print("deleted")
 
 
 class HalfEdge(object):
@@ -82,7 +88,7 @@ def MakeEdge(V1, V2):
 
 
 def Splice(e1, e2):
-    # this function connect to the edges
+    # this function connect  the edges
     # allow me to navigate in the structure
     temp = e1.N
     e1.N = e2.N

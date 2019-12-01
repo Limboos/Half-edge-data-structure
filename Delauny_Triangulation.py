@@ -1,14 +1,11 @@
 import numpy as np
 
-from HALF_EDGE.GUI import *
+#from HALF_EDGE.GUI import *
 from HALF_EDGE.Turtle_drawing import *
 from HALF_EDGE.half_edge import *
 
 
 # TODO
-# FUNCKJA WYŚWIETLACJĄCA CALY TRÓJKĄT
-# NAPISANIE ALGORYTMU WALK
-# TESTY
 
 
 class Stack:

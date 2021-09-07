@@ -5,15 +5,17 @@ import math
 #clean this shit
 #update drawing labirary to MathPlotLib
 
+
 class Vertex(object):
     # this class create Vertex
     count = 1
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, z=0):
         self.Vertex_id = Vertex.count
         Vertex.count += 1
         self.__x = x
         self.__y = y
+        self.__z = z
         self.visited = False
         self.distance = None
 
@@ -35,12 +37,8 @@ class Vertex(object):
     def __del__(self):
         print("deleted")
 
-
 class HalfEdge(object):
-    # this class i use in my data structure
-    # S- represent the other side of edge
-    # V - represent the Vertex
-    # N- represent the edge
+
     count = 1
 
     def __init__(self):
@@ -82,8 +80,8 @@ def MakeEdge(V1, V2):
     he2.V = V2
     he2.S = he1
     he2.N = he2
-    he1.weight=round(math.sqrt((math.pow((V1.getxy()[0] - V2.getxy()[0]),2) + math.pow((V1.getxy()[1] - V2.getxy()[1]),2))),0)
-    he2.weight=round(math.sqrt((math.pow((V2.getxy()[0] - V1.getxy()[0]),2) + math.pow((V2.getxy()[1] - V1.getxy()[1]),2))),0)
+    #he1.weight=round(math.sqrt((math.pow((V1.getxy()[0] - V2.getxy()[0]),2) + math.pow((V1.getxy()[1] - V2.getxy()[1]),2))),0)
+    #he2.weight=round(math.sqrt((math.pow((V2.getxy()[0] - V1.getxy()[0]),2) + math.pow((V2.getxy()[1] - V1.getxy()[1]),2))),0)
     return he1
 
 

@@ -1,9 +1,12 @@
-import numpy as np
 
-#from HALF_EDGE.GUI import *
 from HALF_EDGE.Turtle_drawing import *
 from HALF_EDGE.half_edge import *
-
+import numpy as np
+from scipy.spatial import Delaunay
+import pandas as pd
+import matplotlib.pyplot as plt
+import turtle
+import tkinter
 
 # TODO
 
@@ -391,11 +394,18 @@ if __name__ == '__main__':
     global vertex
     global edges
     vertex = []
-    vertex.append(Vertex(20, 50))
-    vertex.append(Vertex(120, 80))
-    vertex.append(Vertex(100, 220))
-    vertex.append(Vertex(300, 250))
-    vertex.append(Vertex(200, 25))
+
+    #data = pd.read_csv(r'C:\Users\Student240914\Desktop\inzynierka\__Napisane\Programy i dane\Magiczne Bloczki\Dane_wyjatki.csv',sep=";")
+    dane=pd.read_csv(r'C:\Users\Student240914\Desktop\inzynierka\__Napisane\Programy i dane\Magiczne Bloczki\Dane_wyjatki.csv',sep=";")
+    #
+    points = np.array(dane[dane.columns[1:3]])
+    for i in points:
+         vertex.append(Vertex(i[0]+np.random.rand(1,5)/20,i[1]+np.random.rand(1,7)/10))
+    #vertex.append(Vertex(20, 50))
+    #vertex.append(Vertex(120, 80))
+    #vertex.append(Vertex(100, 220))
+    #vertex.append(Vertex(300, 250))
+    #vertex.append(Vertex(200, 25))
     # for i in range(100):
     #    vertex.append(Vertex(random.randint(-300, 300), random.randint(-300, 300)))
 
@@ -408,22 +418,31 @@ if __name__ == '__main__':
     # print(R(vertex[0], edges[0], edges[0].Sym()))
     for element in range(len(tri)):
         tri[element] = tri[element].V.getxy()
+    iterr=1
     for j in vertex:
+        print(iterr)
+        #if iterr==192:
+            #break
         et = Delauny(j, edges)
         for ez in et:
             edges.append(ez)
+        iterr+=1
     drawing_points = bfs(edges[-1])
-    print(len(drawing_points))
-    turtle.tracer(0)
+    print(drawing_points)
+    #turtle.tracer(0)
+     #plt.imshow(points)
+    #plt.triplot(points[:, 0], points[:, 1])
+    #plt.plot(points[:, 0], points[:, 1], 'o')
+    #plt.show()
 
-    '''
+
     
     # a=Circlecenter([vertex[0],vertex[1],vertex[2]])
     turtle.tracer(1)
     turtle.tracer(0)
     turtle.done()
-    # main(vertex)
-    '''
+    main(vertex)
+
     #        del edge
 
     main_edge = edges[0]
